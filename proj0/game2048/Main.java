@@ -1,4 +1,4 @@
-/** start of the project after lecture 2 */
+/** start of the project after lecture 2 ok */
 package game2048;
 
 import java.util.Random;
