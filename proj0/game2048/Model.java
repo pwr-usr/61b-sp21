@@ -3,8 +3,6 @@ package game2048;
 import java.util.Formatter;
 import java.util.Observable;
 
-import static java.util.Objects.isNull;
-
 
 /** The state of a game of 2048.
  *  @author TODO: YOUR NAME HERE
@@ -157,8 +155,21 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
-        return false;
+        boolean max_tile_exists = false;
+        for (int row = 0; row < b.size(); row += 1) {
+            for (int col = 0; col < b.size(); col += 1) {
+                if (b.tile(col, row) == null) {
+                    continue;
+                }
+                else {
+                    if (b.tile(col, row).value() == MAX_PIECE) {
+                        max_tile_exists = true;
+                    }
+                }
+            }
+        }
+        return max_tile_exists;
+
     }
 
     /**
