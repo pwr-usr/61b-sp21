@@ -3,6 +3,8 @@ package game2048;
 import java.util.Formatter;
 import java.util.Observable;
 
+import static java.util.Objects.isNull;
+
 
 /** The state of a game of 2048.
  *  @author TODO: YOUR NAME HERE
@@ -137,8 +139,16 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
-        return false;
+        boolean has_space = false;
+        for (int row = 0; row < b.size(); row += 1) {
+            for (int col = 0; col < b.size(); col += 1) {
+                if (b.tile(col, row) == null) {
+                    has_space = true;
+                }
+            }
+        }
+        return has_space;
+
     }
 
     /**
