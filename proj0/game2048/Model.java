@@ -113,15 +113,15 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-        // treat the behaviour as up
+        // treat the behaviour as down
         Board b = this.board;
         int size = b.size();
         b.setViewingPerspective(side);
         for (int col = 0; col < size; col ++) {
-            for (int row = size -1 ; row >= 0; row += 0) {
+            for (int row = size - 2 ; row >= 0; row --) {
                 Tile t = b.tile(col, row);
                 if (t != null) {
-                    for (int nextPos = size ; nextPos > row ; nextPos --) {
+                    for (int nextPos = size - 1 ; nextPos > row ; nextPos --) {
                         if (b.tile(col, nextPos) != null) {
                             t.move(col, nextPos);
                             changed = true;
@@ -129,6 +129,24 @@ public class Model extends Observable {
                         }
                     }
                 }
+            }
+            for (int row = size - 1 ; row > 0; row --) {
+                Tile currTile = b.tile(col, row);
+                int upperRow = row - 1;
+                Tile nextTile = b.tile(col, upperRow);
+                if (nextTile == null || currTile == null) {
+                    break;
+                }
+                if (nextTile.value() == currTile.value()) {
+                    score += nextTile.value() * 2;
+                    b.move(col, row, nextTile);
+                    changed = true;
+                    for (int position = upperRow -1; position >= 0; position--) {
+                        b.move(col,position + 1, b.tile(col, position));
+                    }
+
+                }
+
             }
         }
         checkGameOver();
