@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author Yiwei
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -113,11 +113,29 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-
+        // treat the behaviour as up
+        Board b = this.board;
+        int size = b.size();
+        b.setViewingPerspective(side);
+        for (int col = 0; col < size; col ++) {
+            for (int row = size -1 ; row >= 0; row += 0) {
+                Tile t = b.tile(col, row);
+                if (t != null) {
+                    for (int nextPos = size ; nextPos > row ; nextPos --) {
+                        if (b.tile(col, nextPos) != null) {
+                            t.move(col, nextPos);
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         checkGameOver();
         if (changed) {
             setChanged();
         }
+        b.setViewingPerspective(side.NORTH);
         return changed;
     }
 
@@ -179,7 +197,6 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
         if (emptySpaceExists(b)) {
             return true;
         }
