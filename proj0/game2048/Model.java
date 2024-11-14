@@ -107,53 +107,50 @@ public class Model extends Observable {
      *    and the trailing tile does not.
      * */
     public boolean tilt(Side side) {
-        boolean changed;
-        changed = false;
-
-        // TODO: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
-        // treat the behaviour as down
+        boolean changed = false;
         Board b = this.board;
         int size = b.size();
         b.setViewingPerspective(side);
-        for (int col = 0; col < size; col ++) {
-            for (int row = size - 2 ; row >= 0; row --) {
+        for (int col = 0; col < size; col++) {
+            for (int row = size - 2; row >= 0; row--) {
                 Tile t = b.tile(col, row);
                 if (t != null) {
-                    for (int nextPos = size - 1 ; nextPos > row ; nextPos --) {
-                        if (b.tile(col, nextPos) != null) {
-                            t.move(col, nextPos);
+                    for (int nextPos = size - 1; nextPos > row; nextPos--) {
+                        if (b.tile(col, nextPos) == null) {
+                            b.move(col, nextPos, t);
                             changed = true;
                             break;
                         }
                     }
                 }
             }
-            for (int row = size - 1 ; row > 0; row --) {
+            for (int row = size - 1; row > 0; row--) {
                 Tile currTile = b.tile(col, row);
                 int upperRow = row - 1;
                 Tile nextTile = b.tile(col, upperRow);
                 if (nextTile == null || currTile == null) {
-                    break;
+                    continue; // Use continue instead of break to check all possible merges
                 }
                 if (nextTile.value() == currTile.value()) {
                     score += nextTile.value() * 2;
                     b.move(col, row, nextTile);
                     changed = true;
-                    for (int position = upperRow -1; position >= 0; position--) {
-                        b.move(col,position + 1, b.tile(col, position));
+                    // Shift tiles after merging
+                    for (int position = upperRow - 1; position >= 0; position--) {
+                        Tile tileToMove = b.tile(col, position);
+                        if (tileToMove != null) {
+                            b.move(col, position + 1, tileToMove);
+                        }
                     }
-
                 }
-
             }
         }
         checkGameOver();
         if (changed) {
             setChanged();
         }
-        b.setViewingPerspective(side.NORTH);
+        // Corrected the enum reference here
+        b.setViewingPerspective(Side.NORTH);
         return changed;
     }
 
